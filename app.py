@@ -33,6 +33,8 @@ selectedMonth = st.selectbox("Select Month:", Months)
 # Filter data based on the selected year and month
 filteredData = newData[(newData["Month"] == selectedMonth) & (newData["Year"] == selectedYear)]
 
+st.dataframe(filteredData)
+
 filteredIds = filteredData["Clinikk ID"].unique()
 
 newFilteredData = data2[data2["Clinikk ID"].isin(filteredIds)]
