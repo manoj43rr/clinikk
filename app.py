@@ -42,6 +42,8 @@ newRequiredColumn = ["COI Uploaded Date","Clinikk ID"]
 newFilteredData = newFilteredData[newRequiredColumn]
 
 filteredData = filteredData.merge(newFilteredData[["COI Uploaded Date", "Clinikk ID"]], on = "Clinikk ID")
+filteredData = filteredData[['Sale Date', 'Date GHI Processed', 'COI Uploaded Date', 'Clinikk ID', 'Full Name', 'Plan', 'Type','Coverage',
+                             'Payment Plan','Price', 'GHI Status', 'Agent Name', 'Phone','Month',  'Year' ]]
 
 # Display filtered data
 st.subheader(f"Data for {selectedMonth} and {selectedYear}")
