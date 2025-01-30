@@ -3,6 +3,7 @@ import streamlit as st
 
 # Read data from Excel
 data = pd.read_excel("data.xlsx", engine="openpyxl")
+data = data.dropna(subset="Clinikk ID")
 data2 = pd.read_excel("data2.xlsx", engine="openpyxl")
 
 # Extract month and year from 'Sale Date'
@@ -33,8 +34,6 @@ selectedMonth = st.selectbox("Select Month:", Months)
 # Filter data based on the selected year and month
 filteredData = newData[(newData["Month"] == selectedMonth) & (newData["Year"] == selectedYear)]
 
-st.dataframe(filteredData)
-
 filteredIds = filteredData["Clinikk ID"].unique()
 
 newFilteredData = data2[data2["Clinikk ID"].isin(filteredIds)]
@@ -47,5 +46,3 @@ filteredData = filteredData.merge(newFilteredData[["COI Uploaded Date", "Clinikk
 # Display filtered data
 st.subheader(f"Data for {selectedMonth} and {selectedYear}")
 st.dataframe(filteredData)
-
-
