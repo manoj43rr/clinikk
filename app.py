@@ -86,5 +86,6 @@ y = np.array([
 labels = ["Data with COI date", "Pending cases with COI date", "Actual Pending", "NA GHI status cases"]
 
 fig, ax = plt.subplots()
-ax.pie(y, labels=labels, autopct='%1.1f%%')
+ax.pie(y, autopct='%1.1f%%')
+ax.legend(mylabels, title="Case Categories", loc="best")
 st.pyplot(fig)
