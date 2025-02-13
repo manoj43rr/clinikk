@@ -41,9 +41,10 @@ persons = []
 
 usedIds = []
 
-for i in range(1, n):
-    temp = 'Person' + i
-    persons.append(temp)
+if n > 0:    
+    for i in range(1, n):
+        temp = 'Person' + i
+        persons.append(temp)
 
 inputFile = st.file_uploader("Upload the File", type=["xlsx", "xls", "csv"])
 
