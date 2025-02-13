@@ -73,14 +73,14 @@ if inputFile is not None:
     for i in range(0, len(persons)):
         resultDf = pd.concat([resultDf, dataFrames[i]], axis=0)
 
-excel_data = to_excel(resultDf)
-
-st.download_button(
-    label="Download data as Excel",
-    data=excel_data,
-    file_name="Output.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
+    excel_data = to_excel(resultDf)
+    
+    st.download_button(
+        label="Download data as Excel",
+        data=excel_data,
+        file_name="Output.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 
     
