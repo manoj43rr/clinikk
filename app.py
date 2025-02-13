@@ -5,9 +5,11 @@ st.header("Renewal Distributor")
 
 n = st.number_input("Enter the number of person into renewals : ")
 
-inputFile = st.file_uploader("Upload the File", type=["xlsx", "xls"])
+inputFile = st.file_uploader("Upload the File", type=["xlsx", "xls", "csv"])
 
 if inputFile is not None:
     data = pd.read_excel(inputFile, engine="openpyxl")
 
-    st.dataframe(data)
+    priceLi = data[data.columns[1]].tolist()
+    print(priceLi)
+
