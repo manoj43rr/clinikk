@@ -11,5 +11,5 @@ if inputFile is not None:
     data = pd.read_excel(inputFile, engine="openpyxl")
 
     priceLi = data[data.columns[1]].tolist()
-    print(len(priceLi))
+    st.caption(f"Length : {len(priceLi)}")
 
