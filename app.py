@@ -10,7 +10,7 @@ def to_excel(df):
     return processed_data
 
 def GreedyFriendsAlgorithm(prices, k):
-    n = len(prices)  # Fixed priceLi -> prices
+    n = len(prices)
     if k > n:
         st.error(f"Can't assign {n} tasks to {k} individuals.")
         return None
@@ -28,9 +28,9 @@ def GreedyFriendsAlgorithm(prices, k):
 
 def AssigningClinikkIds(row):
     amt = row["AssignedAmount"]
-    data1 = data[(data["Product Price New"] == amt) & ~(data["Clinikk ID"].isin(usedIds))]
+    data1 = data[(data[data.columns[1]] == amt) & ~(data[data.columns[0]].isin(usedIds))]
 
-    if not data1.empty:  # Check if data1 is empty before accessing
+    if not data1.empty:
         usedIds.append(data1["Clinikk ID"].iloc[0])
         return data1["Clinikk ID"].iloc[0]
     else:
@@ -62,7 +62,7 @@ if inputFile is not None:
     
     Assignments = GreedyFriendsAlgorithm(priceLi, len(persons))
     
-    if Assignments is not None:  # Ensure Assignments is valid
+    if Assignments is not None:
         for i in range(len(persons)):
             st.write(f"Works assigned to {persons[i]}: {len(Assignments[i])} tasks, Total: {sum(Assignments[i])}")
 
