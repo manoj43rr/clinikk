@@ -1,5 +1,6 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
+from io import BytesIO
 
 def to_excel(df):
     output = BytesIO()
@@ -9,15 +10,14 @@ def to_excel(df):
     return processed_data
 
 def GreedyFriendsAlgorithm(prices, k):
-    n = len(priceLi)
-
+    n = len(prices)  # Fixed priceLi -> prices
     if k > n:
-        print("can't assign",{n},"tasks to",{k},"individuals.")
+        st.error(f"Can't assign {n} tasks to {k} individuals.")
         return None
     
-    prices.sort(reverse = True)
+    prices.sort(reverse=True)
     friendsTotal = [0] * k
-    friendsAssignments = [[] for i in range(k)]
+    friendsAssignments = [[] for _ in range(k)]
 
     for price in prices:
         lowestTotalFriend = friendsTotal.index(min(friendsTotal))
@@ -25,63 +25,65 @@ def GreedyFriendsAlgorithm(prices, k):
         friendsAssignments[lowestTotalFriend].append(price)
 
     return friendsAssignments
-        
+
 def AssigningClinikkIds(row):
-    amt =  row["AssignedAmount"]
+    amt = row["AssignedAmount"]
     data1 = data[(data["Product Price New"] == amt) & ~(data["Clinikk ID"].isin(usedIds))]
-    usedIds.append(data1["Clinikk ID"].iloc[0])
-    return data1["Clinikk ID"].iloc[0]
-    
+
+    if not data1.empty:  # Check if data1 is empty before accessing
+        usedIds.append(data1["Clinikk ID"].iloc[0])
+        return data1["Clinikk ID"].iloc[0]
+    else:
+        return None
 
 st.header("Renewal Distributor")
 
-n = st.number_input("Enter the number of person into renewals : ")
+# Ensure minimum value is 1
+n = st.number_input("Enter the number of persons into renewals:", min_value=1, step=1)
 
+# Define persons inside the if condition
 persons = []
-
 usedIds = []
 
 if n > 0:    
-    for i in range(1, n):
-        temp = 'Person' + i
+    for i in range(n):  # Start from 0
+        temp = f'Person{i+1}'  # Corrected string formatting
         persons.append(temp)
 
 inputFile = st.file_uploader("Upload the File", type=["xlsx", "xls", "csv"])
 
 if inputFile is not None:
-    data = pd.read_excel(inputFile, engine="openpyxl")
+    if inputFile.name.endswith(".csv"):
+        data = pd.read_csv(inputFile)
+    else:
+        data = pd.read_excel(inputFile, engine="openpyxl")
     
     priceLi = data[data.columns[1]].tolist()
     
     Assignments = GreedyFriendsAlgorithm(priceLi, len(persons))
     
-    for i in range(0, len(persons)):
-        print("Works assigned to person ",{i}," is ",{len(Assignments[i])}," and Total of ",{sum(Assignments[i])})
-    
-    dataFrames = [None] * len(persons)
-    
-    for i in range(0, len(persons)):
-        dataFrames[i] = pd.DataFrame(Assignments[i], columns=["AssignedAmount"])
-        dataFrames[i]["Clinikk Id"] = 0
-        dataFrames[i]["Person"] = persons[i]
-    
-    for i in range(0, len(persons)):
-        dataFrames[i]["Clinikk Id"] = dataFrames[i].apply(AssigningClinikkIds, axis = 1)
-    
-    resultDf = pd.DataFrame()
-    
-    for i in range(0, len(persons)):
-        resultDf = pd.concat([resultDf, dataFrames[i]], axis=0)
+    if Assignments is not None:  # Ensure Assignments is valid
+        for i in range(len(persons)):
+            st.write(f"Works assigned to {persons[i]}: {len(Assignments[i])} tasks, Total: {sum(Assignments[i])}")
 
-    excel_data = to_excel(resultDf)
-    
-    st.download_button(
-        label="Download data as Excel",
-        data=excel_data,
-        file_name="Output.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+        dataFrames = []
+        
+        for i in range(len(persons)):
+            df = pd.DataFrame(Assignments[i], columns=["AssignedAmount"])
+            df["Clinikk Id"] = 0
+            df["Person"] = persons[i]
+            dataFrames.append(df)
 
-
-    
-
+        for i in range(len(persons)):
+            dataFrames[i]["Clinikk Id"] = dataFrames[i].apply(AssigningClinikkIds, axis=1)
+        
+        resultDf = pd.concat(dataFrames, axis=0)
+        
+        excel_data = to_excel(resultDf)
+        
+        st.download_button(
+            label="Download data as Excel",
+            data=excel_data,
+            file_name="Output.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
