@@ -45,7 +45,7 @@ n = st.number_input("Enter the number of persons into renewals:", min_value=1, s
 persons = []
 usedIds = []
 
-st.warning('📌 The first column name must be "Clinikk ID"')
+st.caption('📌 The first column name must be "Clinikk ID"')
 
 if n > 0:    
     for i in range(n):  # Start from 0
